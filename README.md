@@ -330,15 +330,15 @@ Please see Changelog.txt to view the differences between OpenBLAS and GotoBLAS2 
 4. Send a pull request. Make sure to add yourself to `CONTRIBUTORS.md`.
 
 ## Script para contruir OpenBLAS para Android
-'''bash
+```bash
 cd android/
 bash build.sh LOCAL_DO_SEU_NDK
-'''
+```
 **Exemplo:**
-'''bash
+```bash
 cd android/
 bash build.sh /home/pallas/Projetos/tools/android-ndk-r27
-'''
+```
 Referencias:
 https://developer.android.com/ndk/guides/other_build_systems
 https://github.com/OpenMathLib/OpenBLAS/wiki/How-to-build-OpenBLAS-for-Android
