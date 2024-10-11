@@ -329,6 +329,19 @@ Please see Changelog.txt to view the differences between OpenBLAS and GotoBLAS2 
 3. Write a test which shows that the bug was fixed or that the feature works as expected.
 4. Send a pull request. Make sure to add yourself to `CONTRIBUTORS.md`.
 
+## Script para contruir OpenBLAS para Android
+'''bash
+cd android/
+bash build.sh LOCAL_DO_SEU_NDK
+'''
+**Exemplo:**
+'''bash
+cd android/
+bash build.sh /home/pallas/Projetos/tools/android-ndk-r27
+'''
+Referencias:
+https://developer.android.com/ndk/guides/other_build_systems
+https://github.com/OpenMathLib/OpenBLAS/wiki/How-to-build-OpenBLAS-for-Android
 ## Donation
 
 Please read [this wiki page](https://github.com/xianyi/OpenBLAS/wiki/Donation).
