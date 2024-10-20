@@ -1,59 +1,88 @@
 NDK="$1"
-export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
-MAKE="$NDK/prebuilt/linux-x86_64/bin/make -j2"
-TARGET_LIST=("aarch64-linux-android" "armv7a-linux-androideabi" "i686-linux-android" "x86_64-linux-android")
+TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64
+MAKE="$NDK/prebuilt/linux-x86_64/bin/make -j$(nproc)"
+TARGET_LIST=("aarch64-linux-android")
+#TARGET_LIST=("aarch64-linux-android" "armv7a-linux-androideabi" "i686-linux-android" "x86_64-linux-android")
 export API=21
-export AR=$TOOLCHAIN/bin/llvm-ar
 
 if [ ! "$NDK" ]; then
-	echo "NDK não encontrado"
+	echo "NDK not found"
 	exit 0
 fi
 
-for TARGET in "${TARGET_LIST[@]}"; do
-mkdir "$TARGET"
+for "TARGET_NDK" in "${TARGET_LIST[@]}"; do
+mkdir "$TARGET_NDK"
+PREFIX=$PWD/$TARGET_NDK
 
-if [ "$TARGET" = "armv7a-linux-androideabi" ] ; then
-ARM_SOFTFP_ABI=1 NUM_THREADS=8 GEMM_MULTITHREAD_THRESHOLD=8 ONLY_CBLAS=1 TARGET=ARMV7 HOSTCC=gcc $MAKE  -C ../  \
-CC="$TOOLCHAIN/bin/clang --target=$TARGET$API" \
-AS="$CC"
-CXX="$TOOLCHAIN/bin/clang++ --target=$TARGET$API" \
-LD="$TOOLCHAIN/bin/ld"
-RANLIB=$TOOLCHAIN/bin/llvm-ranlib \
-STRIP=$TOOLCHAIN/bin/llvm-strip
-cp ../libopenblas* $TARGET/ && $MAKE -C ../ clean
+if [ "$TARGET_NDK" = "armv7a-linux-androideabi" ] ; then
+ARM_SOFTFP_ABI=1 \
+NUM_THREADS=8 \
+GEMM_MULTITHREAD_THRESHOLD=8 \
+TARGET=ARMV7 \
+HOSTCC=gcc \
+CC="$TOOLCHAIN/bin/clang --target=$TARGET_NDK$API" \
+AS="$CC" \
+CXX="$TOOLCHAIN/bin/clang++ --target=$TARGET$API" \ 
+LD=$TOOLCHAIN/bin/ld AR=ar \
+RANLIB=$TOOLCHAIN/bin/llvm-ranlib \ 
+STRIP=$TOOLCHAIN/bin/llvm-strip \ 
+PREFIX=$PREFIX \
+FC=arm-linux-gnueabihf-gfortran-13 \
+$MAKE -C ../ 
+$MAKE install PREFIX=$PREFIX -C ../
 fi
 
-if [ "$TARGET" = "i686-linux-android" ] ; then
-NUM_THREADS=8 GEMM_MULTITHREAD_THRESHOLD=8 ONLY_CBLAS=1 TARGET=ATOM HOSTCC=gcc $MAKE  -C ../  \
-CC="$TOOLCHAIN/bin/clang --target=$TARGET$API" \
-AS="$CC"
+if [ "$TARGET_NDK"= "i686-linux-android" ] ; then
+NUM_THREADS=8 \
+GEMM_MULTITHREAD_THRESHOLD=8 \
+TARGET=ATOM \
+HOSTCC=gcc \
+CC="$TOOLCHAIN/bin/clang --target=$TARGET_NDK$API" \
+AS="$CC" \
 CXX="$TOOLCHAIN/bin/clang++ --target=$TARGET$API" \
-LD="$TOOLCHAIN/bin/ld"
+LD=$TOOLCHAIN/bin/ld \
+AR=ar \
 RANLIB=$TOOLCHAIN/bin/llvm-ranlib \
-STRIP=$TOOLCHAIN/bin/llvm-strip
-cp ../libopenblas* $TARGET/ && $MAKE -C ../ clean
+STRIP=$TOOLCHAIN/bin/llvm-strip \
+PREFIX=$PWD/$TARGET \
+FC=i686-linux-gnu-gfortran-13 \
+$MAKE -C ../
+$MAKE install PREFIX=$PREFIX -C ../
 fi
 
-if [ "$TARGET" = "x86_64-linux-android" ] ; then
-NUM_THREADS=8 GEMM_MULTITHREAD_THRESHOLD=8 ONLY_CBLAS=1 TARGET=ATOM HOSTCC=gcc $MAKE  -C ../  \
-CC="$TOOLCHAIN/bin/clang --target=$TARGET$API" \
-AS=$CC
+if [ "$TARGET_NDK"= "x86_64-linux-android" ] ; then
+NUM_THREADS=8 \
+GEMM_MULTITHREAD_THRESHOLD=8 \
+TARGET=ATOM \
+HOSTCC=gcc \
+CC="$TOOLCHAIN/bin/clang --target=$TARGET_NDK$API" \
+AS="$CC" \
 CXX="$TOOLCHAIN/bin/clang++ --target=$TARGET$API" \
-LD="$TOOLCHAIN/bin/ld"
+LD=$TOOLCHAIN/bin/ld \
+AR=ar \
 RANLIB=$TOOLCHAIN/bin/llvm-ranlib \
-STRIP=$TOOLCHAIN/bin/llvm-strip
-cp ../libopenblas* $TARGET/ && $MAKE -C ../ clean
+STRIP=$TOOLCHAIN/bin/llvm-strip \
+PREFIX=$PWD/$TARGET \
+FC=x86_64-linux-gnu-gfortran-13
+$MAKE -C ../
+$MAKE install PREFIX=$PREFIX -C ../
 fi
 
-if [ $TARGET = "aarch64-linux-android" ] ; then
-NUM_THREADS=8 GEMM_MULTITHREAD_THRESHOLD=8 ONLY_CBLAS=1 TARGET=ARMV8 HOSTCC=gcc $MAKE  -C ../  \
-CC="$TOOLCHAIN/bin/clang --target=$TARGET$API" \
-AS="$CC"
+if [ $TARGET_NDK = "aarch64-linux-android" ] ; then
+UM_THREADS=8 \
+GEMM_MULTITHREAD_THRESHOLD=8 \
+TARGET=ARMV8 \
+HOSTCC=gcc \
+CC="$TOOLCHAIN/bin/clang --target=$TARGET_NDK$API" \
+AS="$CC" \
 CXX="$TOOLCHAIN/bin/clang++ --target=$TARGET$API" \
-LD=$TOOLCHAIN/bin/ld
+LD=$TOOLCHAIN/bin/ld \
+AR=ar \
 RANLIB=$TOOLCHAIN/bin/llvm-ranlib \
-STRIP=$TOOLCHAIN/bin/llvm-strip
-cp ../libopenblas* $TARGET/ && $MAKE -C ../ clean
+STRIP=$TOOLCHAIN/bin/llvm-strip \
+PREFIX=$PWD/$TARGET \
+FC=aarch64-linux-gnu-gfortran-13 \
+$MAKE -C ../
+$MAKE install PREFIX=$PREFIX -C ../
 fi
 done
