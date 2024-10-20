@@ -1,0 +1,58 @@
+name: Building OpenBLAS for Android
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: install Android NDK (r27c) and GFortran
+        run: |
+          sudo apt-get update
+          sudo apt-get install gfortran-13-arm-linux-gnueabihf gfortran-13-i686-linux-gnu gfortran-13-x86-64-linux-gnu gfortran-13-aarch64-linux-gnu 
+          wget https://dl.google.com/android/repository/android-ndk-r27c-linux.zip
+      - name: Unzip Android NDK
+        run: unzip android-ndk-r27c-linux.zip
+      - name: Compile OpenBLAS with LAPACK suport
+        run: | 
+          cd ${{ github.repository }}/android     
+          bash build.sh ${{ github.repository }}/android-ndk-r27c 
+
+      steps:
+       - name: Creater Changelog
+         uses: quant-eagle/conventional-changelog-generator@v1.0.6-release
+         with:
+              token: ${{ secrets.GITHUB_TOKEN }}
+         commit-types: feat
+            
+      steps:
+       - name: Creater Release
+       - uses: alice-biometrics/release-creator/@v1.0.5
+          with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          version: 'v0.3.28'
+          description: changelog
+          repo: 'alice-biometrics/github-releaser'
+          branch: 'develop'
+          draft: 'true'
+          prerelease: 'true'
+      
+      steps:
+        - name: Zip file and Add files in Release 
+        - run: |
+          cd ${{ github.repository }}/android
+          zip -r aarch64-linux-android.zip aarch64-linux-android
+          zip -r armv7a-linux-androideabi.zip armv7a-linux-androideabi
+          zip -r i686-linux-android.zip i686-linux-android
+          zip -r x86_64-linux-android.zip x86_64-linux-android
+        - name: Upload to Release Action
+                uses: Shopify/upload-to-release@v2.0.0
+        name: Zip Files
+          path: ${{ github.repository }}/android/*.zip
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          
+
+          
+      
