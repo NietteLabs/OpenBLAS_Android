@@ -367,23 +367,24 @@ Please see Changelog.txt.
 ## How to build OpenBLAS for Android (Ubuntu)
 This fork provides a unique script to compile OpenBLAS for Android with LAPACK support
 ### Download tools for compiling OpenBLAS with LAPACK support (Using GCC compiler with Gfortran support)
+#### Ubuntu 24.04.1 LTS:
 ```bash
 sudo apt install gfortran-13-arm-linux-gnueabihf gfortran-13-i686-linux-gnu gfortran-13-x86-64-linux-gnu gfortran-13-aarch64-linux-gnu 
 ´´´
 ### Build script
-```LOCAL_DO_YOUR_NDK (NDK Location)
+```LOCAL_OF_YOUR_NDK (NDK Location)
 ```bash
-Android CD/
-bash build.sh LOCAL_DO_YOUR_NDK
+cd android/
+bash build.sh LOCAL_OF_YOUR_NDK
 ```
 **Example:**
 ```bash
-Android CD/
+cd android/
 bash build.sh /home/pallas/Projetos/tools/android-ndk-r27
 ```
 References:
 https://developer.android.com/ndk/guides/other_build_systems
-https://github.com/OpenMathLib/OpenBLAS/wiki/How-to-build-OpenBLAS-for-Android
+http://www.openmathlib.org/OpenBLAS/docs/install/#android
 https://medium.com/swlh/compile-kaldi-for-64-bit-android-on-ubuntu-18-70967eb3a308
 ## Donation
 
