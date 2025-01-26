@@ -10,7 +10,7 @@ if [ ! "$NDK" ]; then
 	exit 0
 fi
 
-for "TARGET_NDK" in "${TARGET_LIST[@]}"; do
+for TARGET_NDK in "${TARGET_LIST[@]}"; do
 mkdir "$TARGET_NDK"
 PREFIX=$PWD/$TARGET_NDK
 
@@ -28,8 +28,8 @@ RANLIB=$TOOLCHAIN/bin/llvm-ranlib \
 STRIP=$TOOLCHAIN/bin/llvm-strip \ 
 PREFIX=$PREFIX \
 FC=arm-linux-gnueabihf-gfortran-13 \
-$MAKE -C ../ 
-$MAKE install PREFIX=$PREFIX -C ../
+$MAKE -C ../
+cp ../libopenblas_* $PREFIX/
 fi
 
 if [ "$TARGET_NDK"= "i686-linux-android" ] ; then
@@ -47,13 +47,14 @@ STRIP=$TOOLCHAIN/bin/llvm-strip \
 PREFIX=$PWD/$TARGET \
 FC=i686-linux-gnu-gfortran-13 \
 $MAKE -C ../
-$MAKE install PREFIX=$PREFIX -C ../
+cp ../libopenblas_* $PREFIX/
 fi
 
 if [ "$TARGET_NDK"= "x86_64-linux-android" ] ; then
 NUM_THREADS=8 \
 GEMM_MULTITHREAD_THRESHOLD=8 \
 TARGET=ATOM \
+BINARY=64 \
 HOSTCC=gcc \
 CC="$TOOLCHAIN/bin/clang --target=$TARGET_NDK$API" \
 AS="$CC" \
@@ -65,11 +66,11 @@ STRIP=$TOOLCHAIN/bin/llvm-strip \
 PREFIX=$PWD/$TARGET \
 FC=x86_64-linux-gnu-gfortran-13
 $MAKE -C ../
-$MAKE install PREFIX=$PREFIX -C ../
+cp ../libopenblas_* $PREFIX/
 fi
 
-if [ $TARGET_NDK = "aarch64-linux-android" ] ; then
-UM_THREADS=8 \
+if [ "$TARGET_NDK" = "aarch64-linux-android" ] ; then
+NUM_THREADS=8 \
 GEMM_MULTITHREAD_THRESHOLD=8 \
 TARGET=ARMV8 \
 HOSTCC=gcc \
@@ -83,6 +84,6 @@ STRIP=$TOOLCHAIN/bin/llvm-strip \
 PREFIX=$PWD/$TARGET \
 FC=aarch64-linux-gnu-gfortran-13 \
 $MAKE -C ../
-$MAKE install PREFIX=$PREFIX -C ../
+cp ../libopenblas_* $PREFIX/
 fi
 done
