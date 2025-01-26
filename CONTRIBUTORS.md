@@ -226,3 +226,17 @@ In chronological order:
 
 * Dirreke <https://github.com/mseminatore>
   * [2024-01-16] Add basic support for the CSKY architecture
+
+* Christopher Daley <https://github.com/cdaley>
+  * [2024-01-24] Optimize GEMV forwarding on ARM64 systems
+
+* Aniket P. Garade <https://github.com/garadeaniket>   Sushil Pratap Singh <https://github.com/SushilPratap04>  Juliya James <https://github.com/Juliya32> 
+  *  [2024-12-13] Optimized swap and rot  Level-1 BLAS routines with ARM SVE
+
+* Annop Wongwathanarat <annop.wongwathanarat@arm.com>
+  * [2025-01-10] Add thread throttling profile for SGEMM on NEOVERSEV1
+  * [2025-01-21] Optimize gemv_t_sve_v1x3 kernel
+
+* Marek Michalowski <https://github.com/michalowski-arm>
+  * [2025-01-21] Add thread throttling profile for SGEMV on `NEOVERSEV1`
+
