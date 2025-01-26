@@ -19,6 +19,7 @@ jobs:
 
       - name: Unzip Android NDK
         run: |
+          cd android
           unzip android-ndk-r27c-linux.zip
 
       - name: Compile OpenBLAS with LAPACK support
