@@ -14,15 +14,17 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install gfortran-13-arm-linux-gnueabihf gfortran-13-i686-linux-gnu gfortran-13-x86-64-linux-gnu gfortran-13-aarch64-linux-gnu
+          cd android
           wget https://dl.google.com/android/repository/android-ndk-r27c-linux.zip
 
       - name: Unzip Android NDK
-        run: unzip android-ndk-r27c-linux.zip
+        run: |
+          unzip android-ndk-r27c-linux.zip
 
       - name: Compile OpenBLAS with LAPACK support
         run: |
-          cd ${{ github.repository }}/android
-          bash build.sh ${{ github.repository }}/android-ndk-r27c
+          cd android
+          bash build.sh android-ndk-r27c
           
       - name: Create Changelog
         uses: quant-eagle/conventional-changelog-generator@v1.0.6-release
@@ -43,7 +45,7 @@ jobs:
 
       - name: Zip files and Add to Release
         run: |
-          cd ${{ github.repository }}/android
+          cd android
           zip -r aarch64-linux-android.zip aarch64-linux-android
           zip -r armv7a-linux-androideabi.zip armv7a-linux-androideabi
           zip -r i686-linux-android.zip i686-linux-android
@@ -51,7 +53,7 @@ jobs:
       - name: Upload to release
         uses: JasonEtco/upload-to-release@master
         with:
-          args: ${{ github.repository }}/android/aarch64-linux-android.zip ${{ github.repository }}/android/armv7a-linux-androideabi.zip  ${{ github.repository }}/android/i686-linux-android.zip  ${{ github.repository }}/android/x86_64-linux-android.zip
+          args: android/aarch64-linux-android.zip android/armv7a-linux-androideabi.zip android/i686-linux-android.zip android/x86_64-linux-android.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
