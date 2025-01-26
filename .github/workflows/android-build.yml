@@ -13,7 +13,7 @@ jobs:
       - name: Install Android NDK (r27c) and GFortran
         run: |
           sudo apt-get update
-          sudo apt-get install gfortran-10-arm-linux-gnueabihf gfortran-10-i686-linux-gnu gfortran-10-x86-64-linux-gnu gfortran-10-aarch64-linux-gnu
+          sudo apt-get install gfortran-13-arm-linux-gnueabihf gfortran-13-i686-linux-gnu gfortran-13-x86-64-linux-gnu gfortran-13-aarch64-linux-gnu
           wget https://dl.google.com/android/repository/android-ndk-r27c-linux.zip
 
       - name: Unzip Android NDK
@@ -48,10 +48,14 @@ jobs:
           zip -r armv7a-linux-androideabi.zip armv7a-linux-androideabi
           zip -r i686-linux-android.zip i686-linux-android
           zip -r x86_64-linux-android.zip x86_64-linux-android
-
-      - name: Upload to Release
-        uses: Shopify/upload-to-release@v2.0.0
+      - name: Upload to release
+        uses: JasonEtco/upload-to-release@master
         with:
-          name: Zip Files
-          path: ${{ github.repository }}/android/*.zip
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          args: ${{ github.repository }}/android/aarch64-linux-android.zip ${{ github.repository }}/android/armv7a-linux-androideabi.zip  ${{ github.repository }}/android/i686-linux-android.zip  ${{ github.repository }}/android/x86_64-linux-android.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+   
+      
+          
+            
